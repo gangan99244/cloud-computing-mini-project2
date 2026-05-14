@@ -25,10 +25,7 @@ from collections import defaultdict
 
 import ray
 
-# ---------------------------------------------------------------------------
-# S3 / local data reader
-# ---------------------------------------------------------------------------
-
+# S3 configuration (adjust if using a different S3-compatible service)
 S3_BUCKET = "mini-project2-iot-log"
 S3_KEY = "Comp3006J MiniProject 2 Dataset.csv"
 LOCAL_CSV = os.path.join(os.path.dirname(__file__), "..", "Comp3006J_MiniProject2_Dataset.csv")
@@ -53,10 +50,8 @@ def read_rows_from_local():
         return list(reader)
 
 
-# ---------------------------------------------------------------------------
-# Ray remote task – process one batch of rows
-# ---------------------------------------------------------------------------
 
+# Ray remote task – process one batch of rows
 @ray.remote
 def detect_anomalies_batch(rows):
     """
@@ -114,10 +109,8 @@ def detect_anomalies_batch(rows):
     return anomalies
 
 
-# ---------------------------------------------------------------------------
-# Merge results from all batches
-# ---------------------------------------------------------------------------
 
+# Merge results from all batches
 def merge_results(batch_results):
     """Merge anomaly dicts from parallel batches, combining reasons."""
     merged = {}
@@ -130,10 +123,7 @@ def merge_results(batch_results):
     return merged
 
 
-# ---------------------------------------------------------------------------
 # Output
-# ---------------------------------------------------------------------------
-
 def print_results(anomalies):
     """Print results as CSV to stdout."""
     writer = csv.writer(sys.stdout)
@@ -144,10 +134,7 @@ def print_results(anomalies):
         writer.writerow([did, info["building"], reason])
 
 
-# ---------------------------------------------------------------------------
 # Main
-# ---------------------------------------------------------------------------
-
 def main():
     parser = argparse.ArgumentParser(description="Ray Anomaly Detection")
     parser.add_argument("--local", action="store_true",
