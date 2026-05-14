@@ -13,7 +13,7 @@ for line in sys.stdin:
     device, value = parts
     counts[device] += int(value)
 
-# 排序取前10
+# 排序取 Top10
 top10 = sorted(counts.items(), key=lambda x: x[1], reverse=True)[:10]
 
 for device, count in top10:

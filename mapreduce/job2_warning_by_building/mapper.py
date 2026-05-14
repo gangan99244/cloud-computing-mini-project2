@@ -1,11 +1,19 @@
+import oss2
 import csv
-csv_file = r"D:\桌面\cloud compute\mini-project2\Comp3006J MiniProject 2 Dataset.csv"
 
-with open(csv_file, newline='') as f:
-    reader = csv.reader(f)
-    next(reader)  # 跳过表头
-    for row in reader:
-        status = row[8]  # 第9列是 status
-        building = row[2]  # 第3列是 building
-        if status in ('WARNING', 'ERROR'):
-            print(f"{building}\t1")
+auth = oss2.Auth()
+endpoint = 'oss-cn-beijing.aliyuncs.com'
+bucket_name = 'mini-project2'
+bucket = oss2.Bucket(auth, endpoint, bucket_name)
+object_key = 'Comp3006J MiniProject 2 Dataset.csv'
+
+data = bucket.get_object(object_key).read().decode('utf-8').splitlines()
+reader = csv.reader(data)
+next(reader)
+
+# 输出 <building,1> 只针对 WARNING/ERROR
+for row in reader:
+    status = row[8]
+    building = row[2]
+    if status in ('WARNING', 'ERROR'):
+        print(f"{building}\t1")
